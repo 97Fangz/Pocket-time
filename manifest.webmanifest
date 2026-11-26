@@ -1,0 +1,1 @@
+{"name":"Money OS","short_name":"Money OS","description":"Private personal finance workspace. Your data stays on your device.","start_url":"./index.html","scope":"./","display":"standalone","background_color":"#070b11","theme_color":"#0b1220","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
