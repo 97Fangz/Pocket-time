@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Money OS · Bs14</title>
+<title>Money OS · Bs15</title>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0b1220"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="icon.svg">
 <style>
 :root{--bg:#f2f5f2;--card:#fff;--soft:#eef3ef;--tx:#13201a;--mu:#68766e;--ln:#e4eae5;--ac:#128a52;--ac2:#e0952a;--bad:#d64a4a;--blue:#3b7bf6;--g1:#073b2a;--g2:#13a063;--sh:0 1px 2px rgba(16,32,24,.05),0 10px 28px rgba(16,32,24,.07);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);color-scheme:light}
@@ -234,11 +234,20 @@ input[type=range]{width:100%;accent-color:var(--blue)}
 @media (min-width:1080px){.top{flex-wrap:nowrap}.top .hi{display:none}}
 @media (max-width:1079px){.top{flex-wrap:nowrap}}
 /* ===== END v8 ===== */
+/* ===== MONEY OS v9 ===== */
+#toast.on{pointer-events:auto}.tb{margin-left:8px;padding:5px 12px;border-radius:999px;font-size:12px}
+.qadd{display:flex;gap:8px;margin-bottom:0}.qadd input{flex:1;font-size:15px;padding:13px 14px;border-radius:14px}
+#flw{margin-bottom:16px;padding:14px 16px}.stepr{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.stepr span{font-size:12px;font-weight:650;padding:5px 10px;border-radius:999px;background:var(--soft);color:var(--mu);border:1px solid var(--ln)}.stepr span.done{color:var(--ac)}.stepr span.now{background:var(--blue);color:#fff;border-color:var(--blue)}
+#wiz{position:fixed;inset:0;background:rgba(5,8,14,.72);display:none;align-items:center;justify-content:center;z-index:80;padding:16px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}#wiz.on{display:flex}.wbox{background:var(--card);border:1px solid var(--ln);border-radius:22px;padding:22px;max-width:440px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.5);animation:rise .4s ease}.wbox h3{margin:0 0 4px;font-size:22px}.wbox label{display:block;margin-top:12px}.wbox .dots{display:flex;gap:6px;margin-bottom:12px}.wbox .dots i{width:26px;height:4px;border-radius:2px;background:var(--ln)}.wbox .dots i.on{background:var(--blue)}
+@media (max-width:1079px){nav button{font-size:10px}}
+/* ===== END v9 ===== */
 </style></head><body>
 
 <section class="scr" id="s-home"><div class="top"><div class="hi kl" id="gr"></div><div class="wp kl" data-bal="1">Savings <b class="mono" id="wsv"></b></div><button class="g sm" onclick="prefill()">+ Log income</button><button class="sm" onclick="jump('spd')">+ Add spending</button><button class="ic" id="pvb" onclick="privacy()" title="Privacy"></button><button class="ic" id="thb" onclick="theme()" title="Theme">◐</button></div><h1 id="hh">Welcome back</h1><div class="sub" id="cy"></div>
 <div id="bn"></div>
 <div class="tick" id="tick" onclick="tickGo()"><span class="live"></span><span class="kl">Live</span><span id="tickt"></span></div>
+<div class="card" id="flw"><div id="flwb"></div></div>
+<div class="qadd"><input id="qk" placeholder="Quick add: type  fish 350  or  lunch 200  or  +1500 refund" autocomplete="off" oninput="qkPrev()" onkeydown="if(event.key==='Enter')qkGo()"><button class="sm" onclick="qkGo()">Add</button></div><div class="mu" id="qkp" style="margin:6px 4px 14px"></div>
 <div class="dash dtop"><div class="card hero" id="hero" data-bal="1"></div><div class="card" id="tdi"><div id="tdib"></div></div></div>
 <div class="qa"><button class="qb" onclick="prefill()"><i style="background:rgba(22,163,74,.14);color:#16a34a"><svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg></i>Income</button><button class="qb" onclick="jump('spd')"><i style="background:rgba(224,149,42,.16);color:#e0952a"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></i>Spend</button><button class="qb" onclick="jump('mim')"><i style="background:rgba(59,123,246,.14);color:#3b7bf6"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></i>Goals</button><button class="qb" onclick="go('plan')"><i style="background:rgba(139,92,246,.14);color:#8b5cf6"><svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 12h3M11 12h9M4 17h11M19 17h1"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17" r="2"/></svg></i>Plan</button></div>
 <div class="dash dmain"><div class="card" id="cfc"><div class="fh2"><h2 style="margin:0">Cash flow</h2><div class="row" style="margin:0"><select id="cfs" onchange="cfSer(this.value)" style="flex:0 1 150px"><option value="all">All money</option><option value="daily">Daily money</option><option value="save">Savings</option></select><div class="tabs" id="cft"></div></div></div><div class="cfh" id="cfh"></div><div id="cfb"></div></div><div class="card" id="fdc"><div class="fh2"><h2 style="margin:0">Insights</h2><span class="kl">Live</span></div><div class="feed" id="leads"></div></div></div>
@@ -349,8 +358,15 @@ input[type=range]{width:100%;accent-color:var(--blue)}
 <div class="card"><h2>Learn</h2><div id="lrnc"></div></div>
 <div class="card"><h2>Activity by date</h2><div class="row" style="margin-top:0"><select id="af" onchange="repAll()"><option value="all">Everything</option><option value="in">Income</option><option value="spend">Spending</option><option value="sv">Saving and goals</option><option value="alloc">Set aside</option></select></div><div id="act"></div></div>
 <div class="card"><h2>Completed pay cycles</h2><div id="hl"></div></div>
-<div class="card"><h2>Data</h2><div class="row"><button onclick="exp()">Export CSV</button><button onclick="backup()">Back up (JSON)</button><label class="fbtn">Restore backup<input type="file" accept=".json,application/json" onchange="restoreFile(this)" style="display:none"></label><button class="g" onclick="resetAll()">Reset all</button></div><textarea id="csv" style="display:none" readonly></textarea></div></section>
+<div class="card"><h2>Backup and data</h2><div class="mu">Backup, restore and export tools are in <a href="#" onclick="go('more');return false">More</a>, on phone and desktop.</div></div></section>
 
+<section class="scr" id="s-more"><h1>More</h1><div class="sub">Settings, backup, privacy and help</div>
+<div class="card"><h2>Your data</h2><div class="hint">Your data lives on this device only. Back up regularly: it takes a second and protects months of records.</div><div class="row"><button onclick="exp()">Export CSV</button><button onclick="backup()">Back up (JSON)</button><label class="fbtn">Restore backup<input type="file" accept=".json,application/json" onchange="restoreFile(this)" style="display:none"></label><button class="g" onclick="resetAll()">Reset all</button></div><textarea id="csv" style="display:none" readonly></textarea></div>
+<div class="card"><h2>Privacy and look</h2><div class="kl">Privacy mode</div><div class="tabs" id="mpv" style="margin:6px 0"></div><div class="hint">Hide amounts as ••• and tap one to reveal it for a few seconds. Balances hides savings and net worth. All hides every amount.</div><div class="kl" style="margin-top:10px">Theme</div><div class="tabs" id="mth" style="margin:6px 0"></div><div class="row"><label class="mu" style="flex:1 1 130px">Your name<input id="mnm" onchange="setMore()"></label><label class="mu" style="flex:1 1 130px">Currency label<input id="mcu" maxlength="5" onchange="setMore()"></label></div></div>
+<div class="card"><h2>Install and share</h2><div class="row" style="margin-top:0"><button id="inst" onclick="installApp()">Install app</button><button class="g" onclick="shareApp()">Share this app</button></div><div class="hint">Installing adds Money OS to your home screen and lets it work offline. Sharing sends only the app link. Your data never travels with it.</div></div>
+<div class="card"><h2>Help and fresh start</h2><div class="row" style="margin-top:0"><button class="g" onclick="wizOpen()">Run the setup tour</button><button class="g" onclick="loadDemo()">Try with sample data</button><button class="g" onclick="eraseAll()">Erase everything here</button></div><div class="hint">Sample data replaces what you see but your session history keeps your real data, so you can restore it. Erase removes everything from this device for good.</div></div>
+<div class="card"><h2>About</h2><div class="mu" id="abt"></div></div></section>
+<div id="wiz"><div class="wbox" id="wizb"></div></div>
 <div id="amb"><span id="ambe">💡</span><div id="ambt"></div><button class="g sm" onclick="ambGo()">Open</button><button class="g sm" onclick="ambX()">×</button></div>
 <div id="toast"></div>
 <nav id="nav"></nav>
@@ -358,11 +374,11 @@ input[type=range]{width:100%;accent-color:var(--blue)}
 <script>
 var ENV=["food","daily","bills","fun","buffer"];
 var PAL=["#e8b04a","#6aa6d6","#c47fa8","#7bbf8e","#d98c6a","#9a8fd1"],BASE=[["fees","Fees &amp; goals","#e07a5f"],["save","Savings","#1f9d63"],["food","Food &amp; transport","#d9922b"],["daily","Daily needs","#c98bb9"],["invest","Invest","#4a7fd1"],["bills","Bills","#8a7fb8"],["fun","Fun &amp; other","#5fb3a5"],["buffer","Buffer","#7c8aa5"]],C=BASE.slice();
-var NAV=[["home","Home","⌂"],["add","Add","+"],["plan","Plan","☰"],["invest","Invest","↗"],["rep","Reports","▤"]],IC2={home:"<svg viewBox='0 0 24 24'><path d='M3 11l9-8 9 8'/><path d='M5 10v10h5v-6h4v6h5V10'/></svg>",add:"<svg viewBox='0 0 24 24'><circle cx='12' cy='12' r='9'/><path d='M12 8v8M8 12h8'/></svg>",plan:"<svg viewBox='0 0 24 24'><path d='M4 7h9M17 7h3M4 12h3M11 12h9M4 17h11M19 17h1'/><circle cx='15' cy='7' r='2'/><circle cx='9' cy='12' r='2'/><circle cx='17' cy='17' r='2'/></svg>",invest:"<svg viewBox='0 0 24 24'><path d='M3 17l6-6 4 4 8-8'/><path d='M15 7h6v6'/></svg>",rep:"<svg viewBox='0 0 24 24'><path d='M5 20V10M12 20V4M19 20v-7'/></svg>"};
-function init(){return{db:[],bi:[],cl:[],nm:{},hide:{},mp:{},bd:[26,31],phase:"upcoming",carry:{},inv:[],inc:[],exp:[],goals:[{n:"University fee balance",t:6500,s:0,pri:true}],hold:[],hist:[],src:["Freelance","Content","Other"],bills:13500,e0:30000,plan:{start:"2026-11-13",exp:12500,l:{fees:6500,save:2000,food:2500,invest:1000,bills:0,daily:450,fun:50}}}}
+var APPV="Bs15",NAV=[["home","Home","⌂"],["add","Add","+"],["plan","Plan","☰"],["invest","Invest","↗"],["rep","Reports","▤"],["more","More","⋯"]],IC2={more:"<svg viewBox='0 0 24 24'><circle cx='5' cy='12' r='1.6'/><circle cx='12' cy='12' r='1.6'/><circle cx='19' cy='12' r='1.6'/></svg>",home:"<svg viewBox='0 0 24 24'><path d='M3 11l9-8 9 8'/><path d='M5 10v10h5v-6h4v6h5V10'/></svg>",add:"<svg viewBox='0 0 24 24'><circle cx='12' cy='12' r='9'/><path d='M12 8v8M8 12h8'/></svg>",plan:"<svg viewBox='0 0 24 24'><path d='M4 7h9M17 7h3M4 12h3M11 12h9M4 17h11M19 17h1'/><circle cx='15' cy='7' r='2'/><circle cx='9' cy='12' r='2'/><circle cx='17' cy='17' r='2'/></svg>",invest:"<svg viewBox='0 0 24 24'><path d='M3 17l6-6 4 4 8-8'/><path d='M15 7h6v6'/></svg>",rep:"<svg viewBox='0 0 24 24'><path d='M5 20V10M12 20V4M19 20v-7'/></svg>"};
+function init(){var t=td();return{db:[],bi:[],cl:[],nm:{},hide:{},mp:{},bd:[26,31],phase:"upcoming",carry:{},inv:[],inc:[],exp:[],goals:[],hold:[],hist:[],src:["Main income","Side income","Other"],bills:0,e0:0,setup:0,plan:{start:addDays(t,1),exp:0,l:{fees:0,save:0,food:0,daily:0,invest:0,bills:0,fun:0,buffer:0}}}}
 var S=init(),cur="home",typ="i",ed=null,ied=null;
 try{var r=localStorage.getItem("mt2");if(r)S=JSON.parse(r)}catch(e){}
-if(!S.inv)S.inv=[];if(!S.db)S.db=[];if(!S.mv)S.mv=[];S.hist.forEach(function(h,i){if(!h.n)h.n=i+1});rebuildHist();if(!S.bi)S.bi=[];if(!S.mp)S.mp={};if(!S.bd)S.bd=[26,31];if(!S.cl)S.cl=[];if(!S.nm)S.nm={};if(!S.hide)S.hide={};rebuildC();if(S.plan&&S.plan.l&&S.plan.l.daily==null)S.plan.l.daily=0;
+if(!S.inv)S.inv=[];if(!S.db)S.db=[];if(!S.mv)S.mv=[];if(S.setup==null)S.setup=(S.inc.length||S.exp.length)?1:0;S.hist.forEach(function(h,i){if(!h.n)h.n=i+1});rebuildHist();if(!S.bi)S.bi=[];if(!S.mp)S.mp={};if(!S.bd)S.bd=[26,31];if(!S.cl)S.cl=[];if(!S.nm)S.nm={};if(!S.hide)S.hide={};rebuildC();if(S.plan&&S.plan.l&&S.plan.l.daily==null)S.plan.l.daily=0;
 (S.hold||[]).forEach(function(h){S.inv.push({id:Math.round(Date.now()+Math.random()*1000),n:h.c,cat:"Crypto",d:td(),why:"",costs:[{d:td(),a:h.inv}],ret:h.real>0?[{d:td(),a:h.real,n:"Realized"}]:[],cur:h.val,st:"active",lesson:""})});S.hold=[];migrate6(r);
 function save(){try{localStorage.setItem("mt2",JSON.stringify(S))}catch(e){}}
 function $(i){return document.getElementById(i)}
@@ -406,12 +422,14 @@ function fitCore(){var l=S.plan.l,old={},fl={};C.forEach(function(c){old[c[0]]=l
  fitLines(l,inc,fl);S.plan.exp=inc;return C.filter(function(c){return old[c[0]]!=l[c[0]]}).map(function(c){return cname(c[0])+" "+f(old[c[0]])+" to "+f(l[c[0]])}).join(", ")}
 function autoFit(){var inc=sm(cyI()),ls=sm(C.map(function(c){return{a:S.plan.l[c[0]]}})),oe=S.plan.exp,pre=S.arr?S.arr+" ":"";S.arr="";
  if(inc==ls){S.plan.exp=inc;if(pre)S.fitNote=pre+"It matches your plan.";save();return}
+ if(S.plan.man){S.plan.exp=inc;S.fitNote=pre+"Your pay is "+f(inc)+" and your plan totals "+f(ls)+" ("+(ls>inc?"over by "+f(ls-inc):f(inc-ls)+" unassigned")+"). I did not touch your lines.";save();return}
+ planUndoPoint();
  var ch=fitCore();S.fitNote=pre+"Pay was "+f(inc)+" KES (planned "+f(oe)+"). Plan adjusted: "+ch+".";save()}
 function fitPlan(){var ch=fitCore();S.fitNote=ch?"Plan adjusted: "+ch+".":"";save();render(false)}
 function dismissNote(){S.fitNote="";save();render(true)}
 function fitBan(){var inc=sm(cyI()),ls=sm(C.map(function(c){return{a:S.plan.l[c[0]]}})),h="";
- if(S.fitNote)h+="<div class='ban'>"+esc(S.fitNote)+" Change any line in Plan. <a href='#' onclick='dismissNote();return false'>OK</a></div>";
- if(inc!=ls&&hasPlanned()){var d=inc-ls;h+="<div class='ban'>Your pay is <b>"+f(inc)+"</b> KES but your plan totals "+f(ls)+" ("+f(Math.abs(d))+" "+(d<0?"too much":"unassigned")+"). <a href='#' onclick='fitPlan();return false'>Fit remaining lines to my pay</a></div>"}
+ if(S.fitNote)h+="<div class='ban'>"+esc(S.fitNote)+" Change any line in Plan. <a href='#' onclick='dismissNote();return false'>OK</a>"+(S.plan.undo?" · <a href='#' onclick='planUndo();return false'>Undo plan change</a>":"")+"</div>";
+ if(inc!=ls&&(hasPlanned()||S.plan.man)){var d=inc-ls;h+="<div class='ban'>Your pay is <b>"+f(inc)+"</b> KES but your plan totals "+f(ls)+" ("+f(Math.abs(d))+" "+(d<0?"too much":"unassigned")+"). <a href='#' onclick='fitPlan();return false'>Fit remaining lines to my pay</a></div>"}
  return h}
 function setG(i,k,v){S.goals[i][k]=k=="n"?v:(+v||0);save();render(true)}
 function setI(id,k,v){ix(id)[k]=v;save();render(true)}
@@ -427,7 +445,7 @@ function payBills(){S.exp.push({d:td(),c:"bills",a:S.bills,n:"Monthly bills"});s
 function del(t,i){if(t=="i")S.inc.splice(i,1);else S.exp.splice(i,1);if(t=="i"&&S.phase=="active"&&!cyI().length){C.forEach(function(c){undoLine(c[0],true)});S.phase="upcoming";S.plan.start=S.plan.ed||S.plan.start;S.fitNote=""}save();render(false)}
 function setFx(){S.bills=+$("bl").value||0;S.e0=+$("e0").value||0;var nic=+$("ci").value||0;if(Math.round(nic)!=Math.round(S.ic||0)){S.icAdj=(S.icAdj||0)+(nic-(S.ic||0))}S.ic=nic;save();render(true)}
 function setPlan(){S.plan.start=$("ps").value||S.plan.start;if(S.phase=="upcoming"){S.plan.exp=+$("pe").value||0;S.plan.ed=S.plan.start}save();render(true)}
-function setLine(k,v){S.plan.l[k]=+v||0;save();render(true)}
+function setLine(k,v){S.plan.man=1;S.plan.l[k]=+v||0;save();render(true)}
 function addSrc(){var v=$("sn").value.trim();if(!v||S.src.indexOf(v)>-1)return;S.src.push(v);$("sn").value="";save();render()}
 function delSrc(i){S.src.splice(i,1);save();render()}
 function addGoal(){var n=$("gn").value,t=+$("gt").value;if(!n||!t)return;S.goals.push({n:n,t:t,s:0});$("gn").value="";$("gt").value="";save();render()}
@@ -560,13 +578,13 @@ function activate(){var u=S.inc.filter(function(x){return !x.cl&&isPay(x)}),firs
  pl.ed=ed;pl.start=first;S.phase="active";
  S.arr=dd>0?"Pay arrived "+dd+" day"+(dd==1?"":"s")+" early (expected "+fd(ed)+").":dd<0?"Pay arrived "+(-dd)+" day"+(dd==-1?"":"s")+" late (expected "+fd(ed)+").":"Pay arrived on the expected day."}
 function startFromPay(){var u=S.inc.filter(function(x){return !x.cl&&isPay(x)}),first=u.map(function(x){return x.d}).sort()[0],pl=S.plan,t=sm(u);
- pl.l=nextLines(t,first);ctMsg="Plan drafted. "+S.nextWhy.join(" ");pl.exp=t;pl.ed=first;pl.start=first;S.phase="active";S.nextSug=null;S.arr="Pay received with no plan set, so I drafted one from your last cycle."}
+ pl.l=nextLines(t,first);S.plan.man=0;S.plan.rv=0;S.plan.undo=null;ctMsg="Plan drafted. "+S.nextWhy.join(" ");pl.exp=t;pl.ed=first;pl.start=first;S.phase="active";S.nextSug=null;S.arr="Pay received with no plan set, so I drafted one from your last cycle."}
 function onIncome(){var u=S.inc.filter(function(x){return !x.cl&&isPay(x)});if(!u.length)return;
  if(S.phase=="none")startFromPay();else if(S.phase=="upcoming")activate();
  else{var first=u.map(function(x){return x.d}).sort()[0];if(first<S.plan.start&&!hasPlanned())S.plan.start=first}
  if(S.phase=="active"&&!hasPlanned())autoFit()}
 function startPlan(){var d=$("nd").value,a=+$("na").value;if(!d||!a){$("npm").textContent="Enter the expected date and amount.";return}
- var pl=S.plan;pl.l=nextLines(a,d);ctMsg="Plan drafted. "+S.nextWhy.join(" ");pl.exp=a;pl.start=d;pl.ed=d;S.phase="upcoming";S.nextSug=null;S.fitNote="";save();render(false)}
+ var pl=S.plan;pl.l=nextLines(a,d);S.plan.man=0;S.plan.rv=0;S.plan.undo=null;ctMsg="Plan drafted. "+S.nextWhy.join(" ");pl.exp=a;pl.start=d;pl.ed=d;S.phase="upcoming";S.nextSug=null;S.fitNote="";save();render(false)}
 var ccFlag=false;
 function completeCycle(){var left=sm(C.map(function(c){return{a:Math.max(0,S.plan.l[c[0]]-act(c[0]))}}));
  if(left>0&&!ccFlag){ccFlag=true;$("ccm").innerHTML="<span class='am'>"+f(left)+" KES is not confirmed yet. Tap Complete cycle again to finish anyway.</span>";return}
@@ -658,7 +676,7 @@ function invInsights(tin,bk,roi,cyc,cats){var A=S.inv,pl=S.plan,o=[];
  if(pl.l.invest>0)o.push(cyc>pl.l.invest?"You invested "+f(cyc)+" this cycle, above your "+f(pl.l.invest)+" plan. Stay inside the plan unless the extra has a clear return.":"Invested "+f(cyc)+" of your "+f(pl.l.invest)+" plan this cycle.");
  o.push("Before your next subscription, write what it should earn and by when. Check back here after 30 days.");
  $("ivi").innerHTML="<ul class='mu'>"+o.map(function(x){return "<li>"+x+"</li>"}).join("")+"</ul>"}
-var FMULT=1,manualKind=false,SK=["food","daily","fun","buffer"],DM={laundry:{c:"daily",a:200},tailor:{c:"daily",a:250},lunch:{c:"food"},transport:{c:"food"},airtime:{c:"daily"}},ctMsg="";
+var FMULT=1,manualKind=false,SK=["food","daily","fun","buffer"],DM={laundry:{c:"daily"},lunch:{c:"food"},groceries:{c:"food"},transport:{c:"food"},matatu:{c:"food"},airtime:{c:"daily"},electricity:{c:"bills"},rent:{c:"bills"}},ctMsg="";
 function dif(a,b){return Math.round((new Date(a+"T00:00:00")-new Date(b+"T00:00:00"))/864e5)}
 function inWin(d){var n=+d.slice(8,10);return n>=S.bd[0]&&n<=S.bd[1]}
 function billsDate(d){var n=+d.slice(8,10),mid=(S.bd[0]+S.bd[1])/2;return inWin(d)||Math.abs(n-mid)<=5}
@@ -675,7 +693,7 @@ function setBw(){S.bd=[+$("bw0").value||26,+$("bw1").value||31];save();render(tr
 function learnedAvg(k){var h=S.hist.filter(function(x){return x.sp}).slice(-3);if(!h.length)return null;return Math.ceil(sm(h.map(function(x){return{a:x.sp[k]||0}}))/h.length*1.1/50)*50}
 function smartLines(bc,ex,owed,cov,date){var cur=S.plan.l,l={},why=[],src=S.hist.some(function(x){return x.sp})?"your last cycles":"your current plan";
  C.forEach(function(c){l[c[0]]=0});
- var food=learnedAvg("food")||cur.food||0,dn=learnedAvg("daily")||cur.daily||450,ess=food+dn;
+ var food=learnedAvg("food")||cur.food||Math.round(ex*0.2/50)*50,dn=learnedAvg("daily")||cur.daily||Math.round(ex*0.05/50)*50,ess=food+dn;
  if(ex<ess&&ess>0){food=Math.round(ex*food/ess);dn=Math.max(0,ex-food);ess=food+dn}
  if(bc){l.bills=Math.min(S.bills,Math.max(0,ex-ess));var gap=S.bills-l.bills;why.push("Bills pay: "+f(l.bills)+" reserved for bills."+(gap>0?" Short by "+f(gap)+". Cover it from savings or extra income.":""))}else why.push("Regular pay: nothing reserved for bills.");
  l.food=food;l.daily=dn;var rem=ex-l.bills-ess,cmt=[];
@@ -703,7 +721,7 @@ function spendUI(){var pl=S.plan,act2=S.phase=="active";
  $("ctn").textContent="This pay is a "+(isBC()?"bills":"regular")+" pay"+(pl.ct&&pl.ct!="auto"?" (set by you)":" (auto: pay day "+(+pl.start.slice(8,10))+", bills pay is the one closest to day "+Math.round((S.bd[0]+S.bd[1])/2)+")")+". "+ctMsg;
  var cnt={},nm={};envSp().forEach(function(e){if(e.n){var k=e.n.toLowerCase();cnt[k]=(cnt[k]||0)+1;nm[k]=e.n}});
  var top=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a]}).slice(0,6).map(function(k){return nm[k]});
- ["Laundry","Tailor","Lunch","Transport"].forEach(function(x){if(top.length<5&&top.map(function(y){return y.toLowerCase()}).indexOf(x.toLowerCase())<0)top.push(x)});
+ ["Lunch","Transport","Groceries","Airtime"].forEach(function(x){if(top.length<5&&top.map(function(y){return y.toLowerCase()}).indexOf(x.toLowerCase())<0)top.push(x)});
  $("chips").innerHTML=top.map(function(x){return "<button class='g' style='padding:6px 10px' onclick=\"chip('"+esc(x).replace(/'/g,"")+"')\">"+esc(x)+"</button>"}).join("");
  $("sl").innerHTML=Object.keys(S.mp).concat(Object.keys(DM)).filter(function(v,i,a){return a.indexOf(v)==i}).map(function(x){return "<option value=\""+esc(x)+"\">"}).join("");
  var idx=[];S.exp.forEach(function(e,i){if(isEnv(e.c)&&!isP(e)&&e.d==td())idx.push(i)});
@@ -742,7 +760,7 @@ function learn(){var sp=envSp(),el=$("lrn");
  if(dk.length<7){$("wk").innerHTML="<div class='mu'>Needs 7+ days of spending ("+dk.length+" so far).</div>";return}
  var av=sw.map(function(v,i){return cw[i]?v/cw[i]:0}),mx=Math.max.apply(null,av)||1,hi=av.indexOf(Math.max.apply(null,av));
  $("wk").innerHTML="<svg class='chart' viewBox='0 0 320 130'>"+av.map(function(v,i){var x=10+i*44,h=v/mx*90;return "<rect x='"+x+"' y='"+(100-h)+"' width='30' height='"+h+"' rx='3' fill='"+(i==hi?"var(--ac2)":"var(--ac)")+"'/><text x='"+x+"' y='118' font-size='10' fill='var(--mu)'>"+DN[i]+"</text>"}).join("")+"</svg><div class='mu'>You spend the most on "+DN[hi]+"s (about "+f(av[hi])+" on average).</div>"}
-var PRE=[{n:"Support partner",a:1000,f:"2w"},{n:"Family support",a:"",f:"month"},{n:"Airtime and data",a:"",f:"pay"}];
+var PRE=[{n:"Family support",a:"",f:"month"},{n:"Savings group",a:"",f:"2w"},{n:"Airtime and data",a:"",f:"pay"}];
 function rebuildC(){C=BASE.map(function(b){var n=S.nm[b[0]];return[b[0],n?esc(n):b[1],b[2]]}).concat(S.cl.map(function(c){return[c.k,esc(c.n),c.col]}));C.forEach(function(c){if(S.plan.l[c[0]]==null)S.plan.l[c[0]]=0})}
 function addM(d,n){var x=new Date(d+"T00:00:00"),dy=x.getDate();x.setDate(1);x.setMonth(x.getMonth()+n);var dm=new Date(x.getFullYear(),x.getMonth()+1,0).getDate();x.setDate(Math.min(dy,dm));return ymd(x)}
 function isDue(cu,date){var f2=cu.f;return f2=="pay"||(f2=="once"&&!cu.done)||((f2=="2w"||f2=="month")&&!!cu.next&&cu.next<=addDays(date,9))}
@@ -901,7 +919,7 @@ function greet(){var h=new Date().getHours();return (h<12?"Good morning":h<17?"G
 function setName(){S.name=$("nm0").value.trim();save();render(true)}
 function applyTheme(){var t=S.th||"auto",r=document.documentElement;if(t=="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",t);var b=$("thb");if(b)b.innerHTML={auto:"<svg viewBox='0 0 24 24' width='19' height='19' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round'><circle cx='12' cy='12' r='8'/><path d='M12 4v16' /></svg>",light:"<svg viewBox='0 0 24 24' width='19' height='19' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round'><circle cx='12' cy='12' r='4'/><path d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/></svg>",dark:"<svg viewBox='0 0 24 24' width='19' height='19' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z'/></svg>"}[t]}
 function theme(){var o=["auto","light","dark"],n=o[(o.indexOf(S.th||"auto")+1)%3];S.th=n;applyTheme();save();toast("Theme: "+n)}
-function toast(m){var t=$("toast");if(!t)return;t.textContent=m;t.className="on";clearTimeout(window._tt);window._tt=setTimeout(function(){t.className=""},1800)}
+function toast(m,a,ms){var t=$("toast");if(!t)return;t.innerHTML=esc(m)+(a?" <button class='tb' onclick=\""+a.fn+"\">"+esc(a.al)+"</button>":"");t.className="on";clearTimeout(window._tt);var go2=function(){window._tt=setTimeout(function(){t.className=""},ms||(a?8000:4800))};go2();t.onmouseenter=function(){clearTimeout(window._tt)};t.onmouseleave=go2}
 function jump(id){if(cur!="home")go("home");setTimeout(function(){var e=$(id);if(e){e.scrollIntoView({behavior:"smooth",block:"start"});if(id=="spd"&&$("qa"))$("qa").focus()}},80)}
 function jumpRep(id){go("rep");setTimeout(function(){var e=$(id);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})},80)}
 function heroHTML(ef,cv,ic,owed){var nw=ef+cv+ic+spareTot()-debtLeft(),sa=S.exp.filter(function(e){return e.c=="save"}).sort(function(a,b){return a.d<b.d?-1:1}),run=S.e0,pts=[S.e0];sa.forEach(function(e){run+=e.a;pts.push(run)});
@@ -1133,8 +1151,8 @@ function pvMode(){return S.pv==null?1:S.pv}
 function hideEl(el){var m=pvMode();return m==2||(m==1&&!!(el.closest&&el.closest("[data-bal]")))}
 function applyMask(root){(root||document).querySelectorAll(".sv").forEach(function(sp){var h=hideEl(sp),rev=sp.classList.contains("rev"),want=(h&&!rev)?"•••":sp.getAttribute("data-v");if(sp.textContent!==want)sp.textContent=want;sp.classList.toggle("msk",h&&!rev)})}
 function maskAll(root){root=root||document.getElementById("mos-main-inner")||document.body;var RX=/\uE000([^\uE001]*)\uE001/g,w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),nodes=[],n;
- while((n=w.nextNode())){if(n.nodeValue.indexOf("\uE000")>-1)nodes.push(n)}
- nodes.forEach(function(n){var p=n.parentNode;if(!p)return;var tag=p.nodeName,txt=n.nodeValue;if(tag=="SCRIPT"||tag=="STYLE")return;
+ while((n=w.nextNode())){if(n.nodeValue.indexOf("\uE000")>-1||(S.cur&&S.cur!="KES"&&n.nodeValue.indexOf("KES")>-1))nodes.push(n)}
+ nodes.forEach(function(n){var p=n.parentNode;if(!p)return;var tag=p.nodeName,txt=n.nodeValue;if(tag=="SCRIPT"||tag=="STYLE")return;if(S.cur&&S.cur!="KES"&&txt.indexOf("KES")>-1){txt=txt.replace(/\bKES\b/g,S.cur);n.nodeValue=txt;if(txt.indexOf("\uE000")<0)return}
   if(tag=="OPTION"||tag=="TEXTAREA"||p.namespaceURI=="http://www.w3.org/2000/svg"){n.nodeValue=txt.replace(RX,function(m,v){return hideEl(p)?"•••":v});return}
   var frag=document.createDocumentFragment(),last=0,m;RX.lastIndex=0;
   while((m=RX.exec(txt))){if(m.index>last)frag.appendChild(document.createTextNode(txt.slice(last,m.index)));var sp=document.createElement("span");sp.className="sv";sp.setAttribute("data-v",m[1]);sp.textContent=m[1];frag.appendChild(sp);last=RX.lastIndex}
@@ -1224,7 +1242,7 @@ function scorecard(){var hv=S.hist.slice(-3),cap=comf().cap,P=[],ef=efund(),tmn=
 function focusNow(){var R=RK.filter(function(r){return r.s>=60});if(R.length){var r=R[0];return{tone:"focus",tag:"FOCUS",when:"now",t:"Focus now: "+r.n,b:r.note,al:r.al,fn:r.fn}}
  var st=RM.filter(function(s){return !s.done})[0];if(st)return{tone:"focus",tag:"FOCUS",when:"now",t:"Next milestone: "+st.n,b:st.note+(st.eta?" Estimated: "+st.eta+".":""),al:"See roadmap",fn:"jump('rdm')"};return null}
 function feedUI(){var L=leads(),F=focusNow(),items=[],tg={risk:"ALERT",warn:"WATCH",good:"WIN",idea:"IDEA"},ls=lessonFor();
- if(F)items.push(F);L.slice(0,8).forEach(function(x){if(F&&F.fn==x.fn&&F.al==x.al)return;items.push({tone:x.tone,tag:tg[x.tone]||"NOTE",when:"now",t:x.ic+" "+x.t,b:x.b,al:x.al,fn:x.fn})});
+ if(F)items.push(F);L.slice(0,8).forEach(function(x){if(F&&F.fn==x.fn&&F.al==x.al)return;items.push({tone:x.tone,tag:x.tag||tg[x.tone]||"NOTE",when:"now",t:x.ic+" "+x.t,b:x.b,al:x.al,fn:x.fn})});
  if(ls)items.push({tone:"learn",tag:"LEARN",when:"1 min",t:ls.t,b:ls.b,al:"Got it",fn:"lessonRead('"+ls.id+"')"});
  $("leads").innerHTML=items.slice(0,10).map(function(x){return "<div class='fi "+x.tone+"'><div class='fh'><span class='tg'>"+x.tag+"</span><span class='kl'>"+x.when+"</span></div><div class='ft'>"+x.t+"</div><div class='fd'>"+x.b+"</div><a class='fa' onclick=\""+x.fn+"\">"+x.al+" →</a></div>"}).join("")||"<div class='mu'>No insights yet. Log your pay and spending and I will start reading your money.</div>"}
 function riskUI(){var R=RK,ov=Math.round(0.6*R[0].s+0.4*sm(R.slice(0,3).map(function(r){return{a:r.s}}))/3),lv=ov>=65?["HIGH","var(--bad)"]:ov>=35?["MODERATE","var(--ac2)"]:["LOW","var(--ac)"],p=persona();
@@ -1308,7 +1326,7 @@ function studioUI(){var el=$("stub");if(!el)return;if(S.phase=="none"){el.innerH
  +"<div class='kl' style='margin-top:14px'>Why I suggest this</div><ul class='mu'>"+sug.why.map(function(x){return "<li>"+x+"</li>"}).join("")+"</ul><div class='row'><button onclick=\"applySug('sug')\">Use suggested</button><button class='g' onclick=\"applySug('blend')\">Blend half-way</button><button class='g' onclick=\"toast('Keeping your plan')\">Keep mine</button></div>"}
 function setIntent(k){S.intent=k;save();render(true)}
 function applySug(m){if(!SUGC)return;if(hasPlanned()){toast("Undo the set-aside on Home first, then apply");return}var L=SUGC.l;C.forEach(function(c){var a=L[c[0]]||0,b=S.plan.l[c[0]]||0;S.plan.l[c[0]]=m=="blend"?Math.round((a+b)/2/10)*10:a});S.plan.sug=JSON.parse(JSON.stringify(L));save();render(false);toast(m=="blend"?"Blended plan applied":"Suggested plan applied")}
-function tw(k,v){S.plan.l[k]=+v;var e=$("tw_"+k);if(e)e.innerHTML=f(+v);var m=$("stum");if(m&&SUGC)m.innerHTML=studioMetrics()}
+function tw(k,v){S.plan.man=1;S.plan.l[k]=+v;var e=$("tw_"+k);if(e)e.innerHTML=f(+v);var m=$("stum");if(m&&SUGC)m.innerHTML=studioMetrics()}
 function twc(){save();render(true)}
 function tweak(a,b,n){if(S.phase=="none"||hasPlanned()){go("plan");return}var l=S.plan.l,t=Math.min(n,l[a]||0);if(t<=0){go("plan");return}l[a]-=t;l[b]=(l[b]||0)+t;save();render(true);toast("Moved "+nf(t)+" from "+cname(a)+" to "+cname(b))}
 function avgSaveCycle(){var pl=(S.plan.l.save||0)+(S.plan.l.invest||0);if(S.phase!="none"&&pl>0)return pl;var hv=S.hist.filter(function(h){return h.sv>0}).slice(-3);return hv.length?med(hv.map(function(h){return h.sv})):0}
@@ -1338,10 +1356,10 @@ function tickShow(){var el=$("tickt");if(!el||!TKL.length)return;var x=TKL[TKI%T
 function tickGo(){var x=TKL[TKI%TKL.length];if(x)try{(new Function(x.fn))()}catch(e){}}
 function ambX(){var el=$("amb");if(el&&el.classList.contains("on"))el.classList.remove("on")}
 function ambGo(){if(CURA)try{(new Function(CURA.fn))()}catch(e){}ambX()}
-function ambShow(){if(!AMBL.length)return;var el=$("amb");if(!el)return;if(el.classList.contains("on")&&Date.now()-AMBT<12000)return;AMBT=Date.now();var x=AMBL[Math.floor(Math.random()*AMBL.length)];CURA=x;$("ambe").textContent=x.e;$("ambt").innerHTML=x.t;el.classList.add("on")}
-["mousemove","keydown","touchstart","click","scroll"].forEach(function(ev){document.addEventListener(ev,function(){LASTACT=Date.now();if(ev!="mousemove"||true)ambX()},true)});
-setInterval(function(){if(document.hidden)return;TKI++;tickShow()},6500);
-setInterval(function(){if(document.hidden)return;if(Date.now()-LASTACT>30000)ambShow()},4000);
+function ambShow(){if(!AMBL.length)return;var el=$("amb");if(!el)return;if(el.classList.contains("on")&&(Date.now()-AMBT<24000||el.matches(":hover")))return;AMBT=Date.now();var x=AMBL[Math.floor(Math.random()*AMBL.length)];CURA=x;$("ambe").textContent=x.e;$("ambt").innerHTML=x.t;el.classList.add("on")}
+["mousemove","keydown","touchstart","click","scroll"].forEach(function(ev){document.addEventListener(ev,function(){LASTACT=Date.now()},true)});
+var TKP=0;setInterval(function(){if(document.hidden||TKP)return;TKI++;tickShow()},9000);
+setInterval(function(){if(document.hidden)return;var el=$("amb");if(el&&el.classList.contains("on")&&Date.now()-AMBT>30000&&!el.matches(":hover"))ambX();if(Date.now()-LASTACT>45000)ambShow()},4000);
 function countUp(){var sp=document.querySelector("#hero .bigv .sv");if(!sp)return;var to=+String(sp.getAttribute("data-v")).replace(/,/g,"");if(isNaN(to))return;var from=LASTNW==null?0:LASTNW;LASTNW=to;if(from===to||sp.classList.contains("msk"))return;var t0=performance.now();(function step(t){var k=Math.min(1,(t-t0)/800),e=1-Math.pow(1-k,3);if(!sp.classList.contains("msk"))sp.textContent=Math.round(from+(to-from)*e).toLocaleString("en-US");if(k<1)requestAnimationFrame(step);else if(!sp.classList.contains("msk"))sp.textContent=to.toLocaleString("en-US")})(t0)}
 function aiKey(){try{return localStorage.getItem("mos_ai_key")||""}catch(e){return ""}}
 function aiModel(){try{return localStorage.getItem("mos_ai_model")||"claude-haiku-5-5"}catch(e){return "claude-haiku-5-5"}}
@@ -1359,7 +1377,76 @@ homeUI=(function(o){return function(){o();ichUI();itgUI();sesUI();studioUI();wea
 leads=(function(o){return function(){var L=o(),t=td(),I=integrity();if(I.length)L.push({p:93,tone:"risk",ic:"🧮",t:"Your records do not add up",b:plain(I[0].t),al:"Review",fn:"jumpRep('itg')"});
  S.inv.forEach(function(i){if(i.st!="planned")return;var dd=dif(i.due,t);if(dd<=7){var sh=i.pa>(S.ic||0);L.push({p:sh?81:70,tone:sh?"warn":"idea",ic:"🗓️",t:esc(i.n)+" is planned "+(dd<0?"(overdue)":dd==0?"for today":"in "+dd+" day"+(dd==1?"":"s")),b:f(i.pa)+" KES."+(sh?" Your invest cash is "+f(i.pa-(S.ic||0))+" short.":" Tap Mark paid when you buy it."),al:"Open Invest",fn:"go('invest')"})}});
  L.sort(function(a,b){return b.p-a.p});return L}})(leads);
-if("serviceWorker" in navigator&&location.protocol.indexOf("http")==0){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
+if("serviceWorker" in navigator&&location.protocol.indexOf("http")==0){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").then(function(reg){reg.addEventListener("updatefound",function(){var w=reg.installing;if(w)w.addEventListener("statechange",function(){if(w.state=="installed"&&navigator.serviceWorker.controller)toast("A new version is ready",{al:"Reload now",fn:"location.reload()"},90000)})})}).catch(function(){})})}
+function planUndoPoint(){S.plan.undo={l:JSON.parse(JSON.stringify(S.plan.l)),exp:S.plan.exp,t:Date.now()}}
+function planUndo(){var u=S.plan.undo;if(!u)return;S.plan.l=u.l;S.plan.exp=u.exp;S.plan.undo=null;S.plan.man=1;S.fitNote="";save();render(false);toast("Your previous plan is back")}
+fitPlan=(function(o){return function(){planUndoPoint();o();toast("Plan adjusted",{al:"Undo",fn:"planUndo()"})}})(fitPlan);
+smartPlan=(function(o){return function(){var b=JSON.stringify(S.plan.l);planUndoPoint();o();if(JSON.stringify(S.plan.l)!==b){S.plan.man=0;save();toast("Smart plan applied",{al:"Undo",fn:"planUndo()"})}}})(smartPlan);
+applySug=(function(o){return function(m){var b=JSON.stringify(S.plan.l);planUndoPoint();o(m);if(JSON.stringify(S.plan.l)!==b){S.plan.man=m=="blend"?1:0;save();toast(m=="blend"?"Blended plan applied":"Suggested plan applied",{al:"Undo",fn:"planUndo()"})}}})(applySug);
+tweak=(function(o){return function(a,b,n){var before=JSON.stringify(S.plan.l);planUndoPoint();o(a,b,n);if(JSON.stringify(S.plan.l)!==before){S.plan.man=1;save();toast("Plan tweaked",{al:"Undo",fn:"planUndo()"})}}})(tweak);
+function moreUI(){if(!$("mpv"))return;var m=pvMode(),th=S.th||"auto";$("mpv").innerHTML=[["Off",0],["Balances",1],["All amounts",2]].map(function(x){return "<button class='"+(m==x[1]?"on":"")+"' onclick='setPv("+x[1]+")'>"+x[0]+"</button>"}).join("");$("mth").innerHTML=[["Auto","auto"],["Light","light"],["Dark","dark"]].map(function(x){return "<button class='"+(th==x[1]?"on":"")+"' onclick=\"setTh('"+x[1]+"')\">"+x[0]+"</button>"}).join("");
+ if(document.activeElement!==$("mnm"))$("mnm").value=S.name||"";if(document.activeElement!==$("mcu"))$("mcu").value=S.cur||"KES";
+ $("abt").innerHTML="Money OS "+APPV+". Your records stay on this device. "+(S.demo?"<b>You are viewing sample data.</b> ":"")+"Session history keeps your last 40 states.";if($("inst"))$("inst").style.display=(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)?"none":""}
+function setPv(m){S.pv=m;save();applyPrivacy();render(true);maskAll()}
+function setTh(t){S.th=t;save();applyTheme();render(true)}
+function setMore(){S.name=$("mnm").value.trim();S.cur=($("mcu").value.trim()||"KES").toUpperCase().slice(0,5);save();render(true)}
+var DEFI=null,WZSHOWN=0;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();DEFI=e});
+function installApp(){if(DEFI){DEFI.prompt();DEFI=null}else toast("On your phone, open the browser menu and choose Add to Home screen",null,8000)}
+function shareApp(){var u=location.protocol.indexOf("http")==0?location.href.split("#")[0]:"";if(navigator.share&&u){navigator.share({title:"Money OS",text:"A private money workspace that keeps your data on your device.",url:u}).catch(function(){})}else if(u&&navigator.clipboard){navigator.clipboard.writeText(u).then(function(){toast("App link copied")})}else toast("Host the app online first, then share its link",null,7000)}
+function eraseAll(){if(!confirm("Erase ALL data on this device? This cannot be undone."))return;if(!confirm("Last check: back up first if you want to keep anything. Erase now?"))return;try{localStorage.removeItem("mt2");localStorage.removeItem("mt2_snaps");localStorage.removeItem("mos_ai_key");localStorage.removeItem("mos_ai_model")}catch(e){}location.reload()}
+function loadDemo(){if(S.inc.length&&!confirm("Replace what you see with sample data? Your current data stays in Session history, so you can restore it."))return;save();var pv=S.pv,th=S.th;S=init();S.setup=1;S.demo=1;S.name="Sample";S.bills=12000;S.e0=25000;S.pv=pv;S.th=th;
+ S.bi=[{id:uid(),n:"Rent",a:7000,due:1},{id:uid(),n:"Electricity",a:2000,due:8},{id:uid(),n:"Internet",a:1500,due:12},{id:uid(),n:"Water",a:1500,due:18}];S.goals=[{n:"Laptop",t:60000,s:12000},{n:"Emergency top-up",t:30000,s:5000,pri:true}];
+ S.plan.start=addDays(td(),-3);S.plan.exp=15000;S.plan.l={fees:0,save:5000,food:3000,daily:1200,invest:1500,bills:0,fun:1000,buffer:3300};rebuildC();save();
+ setT("i");$("sel").value=S.src[0];$("a").value=15000;$("d").value=addDays(td(),-3);$("n").value="Sample pay";manualKind=false;$("ik").value="pay";saveEntry();allocate();
+ [["Lunch",220,"food",-2],["Transport",150,"food",-2],["Airtime",100,"daily",-2],["Groceries",640,"food",-1],["Lunch",240,"food",-1],["Soap",120,"daily",-1],["Lunch",210,"food",0],["Matatu",180,"food",0]].forEach(function(x){$("qa").value=x[1];$("qn").value=x[0];$("qc").value=x[2];$("qd").value=addDays(td(),x[3]);quickSpend()});
+ save();render(false);go("home");toast("Sample data loaded. Explore freely.")}
+var WZ={n:0,d:{}};
+function wizOpen(){WZ={n:0,d:{name:S.name||"",cur:S.cur||"KES",bills:S.bills||"",e0:S.e0||"",exp:S.plan.exp||"",date:S.plan.start||addDays(td(),1)}};$("wiz").classList.add("on");wizStep()}
+function wizClose(){$("wiz").classList.remove("on");if(!S.setup){S.setup=1;save()}}
+function wizStep(){var n=WZ.n,d=WZ.d,h="<div class='dots'>"+[0,1,2].map(function(i){return "<i class='"+(i<=n?"on":"")+"'></i>"}).join("")+"</div>";
+ if(n==0)h+="<h3>Welcome to Money OS 👋</h3><div class='mu'>A private workspace that plans your money, tracks what really happens, and learns your habits. Setup takes about a minute. Your data stays on this device.</div><label class='mu'>What should I call you?<input id='wn' value=\""+esc(d.name)+"\" placeholder='Your name (optional)'></label><label class='mu'>Currency label<input id='wc' maxlength='5' value=\""+esc(d.cur)+"\"></label>";
+ else if(n==1)h+="<h3>Your basics 🏠</h3><div class='mu'>Skip anything you do not know yet. You can change it later.</div><label class='mu'>Monthly bills total (rent, power, internet, water...)<input id='wb' type='number' inputmode='decimal' value=\""+esc(d.bills)+"\"></label><label class='mu'>Savings you have right now<input id='ws' type='number' inputmode='decimal' value=\""+esc(d.e0)+"\"></label>";
+ else h+="<h3>Your next pay 💸</h3><div class='mu'>I will draft a plan from it. You can edit every line.</div><label class='mu'>Expected pay amount<input id='we' type='number' inputmode='decimal' value=\""+esc(d.exp)+"\"></label><label class='mu'>Expected pay date<input id='wd' type='date' value=\""+esc(d.date)+"\"></label>";
+ h+="<div class='row' style='margin-top:16px'>"+(n>0?"<button class='g' onclick='wizBack()'>Back</button>":"<button class='g' onclick='wizClose()'>Skip for now</button>")+"<button style='flex:1' onclick='wizNext()'>"+(n==2?"Finish and plan":"Next")+"</button></div>";$("wizb").innerHTML=h}
+function wizGrab(){var d=WZ.d,g=function(i){var e=$(i);return e?e.value:null};if($("wn")){d.name=g("wn");d.cur=g("wc")}if($("wb")){d.bills=g("wb");d.e0=g("ws")}if($("we")){d.exp=g("we");d.date=g("wd")}}
+function wizBack(){wizGrab();WZ.n=Math.max(0,WZ.n-1);wizStep()}
+function wizNext(){wizGrab();if(WZ.n<2){WZ.n++;wizStep();return}var d=WZ.d;S.name=(d.name||"").trim();S.cur=((d.cur||"KES").trim()||"KES").toUpperCase().slice(0,5);S.bills=+d.bills||0;S.e0=+d.e0||0;S.plan.exp=+d.exp||0;S.plan.start=d.date||addDays(td(),1);S.phase="upcoming";
+ if(S.plan.exp>0){S.plan.l=nextLines(S.plan.exp,S.plan.start);S.plan.man=0;S.plan.rv=0}S.setup=1;rebuildC();save();$("wiz").classList.remove("on");render(false);go("home");toast("You are set. I drafted your first plan.",null,6000)}
+var KW={food:["fish","lunch","dinner","breakfast","chapati","ugali","rice","meat","milk","bread","tea","snack","groceries","vegetables","fruit","matatu","bus","boda","uber","transport","fare","fuel","eggs","sugar","flour"],daily:["airtime","data","soap","laundry","haircut","tailor","toiletries","phone","charcoal","gas","tissue"],bills:["rent","electricity","power","water","wifi","internet","kplc"],fun:["movie","drinks","beer","game","outing","gift","coffee"]};
+function qkCat(w){var k=w.toLowerCase().trim();if(S.mp[k])return S.mp[k].c;var ps=k.split(/\s+/);for(var c in KW){if(ps.some(function(p){return KW[c].indexOf(p)>-1}))return c}return "daily"}
+function qkParse(t){t=(t||"").trim();if(!t)return null;var m=t.match(/(\d[\d,]*\.?\d*)/);if(!m)return{err:"Add an amount, for example: fish 350"};var a=+m[1].replace(/,/g,""),rest=t.replace(m[0],"").replace(/^\s*\+/,"").replace(/\s+/g," ").trim(),inc=/^\s*\+/.test(t)||/^(got|received|income|refund|salary)\b/i.test(rest);if(!(a>0))return{err:"Amount must be above zero"};
+ if(inc)return{t:"i",a:a,n:rest.replace(/^(got|received|income)\s*/i,"")};return{t:"e",a:a,n:rest||"Spending",c:qkCat(rest||"item")}}
+function qkPrev(){var p=qkParse($("qk").value),el=$("qkp");if(!p){el.textContent="";return}if(p.err){el.textContent=p.err;return}el.innerHTML=p.t=="i"?"Press Enter to log <b>"+f(p.a)+"</b> as income"+(p.n?" ("+esc(p.n)+")":"")+".":"Press Enter to log <b>"+f(p.a)+"</b> · "+esc(p.n)+" → <b>"+cnameH(p.c)+"</b>"}
+function qkGo(){var p=qkParse($("qk").value);if(!p||p.err){qkPrev();return}
+ if(p.t=="i"){setT("i");$("sel").value=S.src[0];$("a").value=p.a;$("n").value=p.n;$("d").value=td();manualKind=false;autoKind();saveEntry()}
+ else{S.exp.push({d:td(),c:p.c,a:p.a,n:p.n});S.mp[p.n.toLowerCase()]={c:p.c,a:p.a};save();render();react(p)}
+ $("qk").value="";if(p.t=="e")$("qkp").innerHTML=$("qkp").innerHTML;else $("qkp").innerHTML=""}
+function react(p){var last=S.exp[S.exp.length-1],same=envSp().filter(function(e){return e!==last&&e.n&&e.n.toLowerCase()==p.n.toLowerCase()}),msg;
+ if(same.length>=2){var md=med(same.map(function(e){return e.a}));msg=p.a>md*1.3?p.n+" cost more than your usual "+f(md)+".":p.a<md*0.8?"Cheaper than your usual "+f(md)+" for "+p.n+".":"In line with your usual "+f(md)+" for "+p.n+"."}else msg="Logged "+f(p.a)+" for "+p.n+". I will learn your usual price.";
+ var c=dayCalc(td());if(S.phase=="active"&&fundT()>0){var left=Math.max(0,c.allow-c.spent);msg+=" Safe to spend today: "+f(left)+"."}
+ toast(msg,null,7500);var q=$("qkp");if(q)q.innerHTML="✓ "+msg}
+function leftTot(){return S.phase=="active"?sm(C.map(function(c){return{a:Math.max(0,(S.plan.l[c[0]]||0)-act(c[0]))}})):0}
+function flowUI(){var el=$("flwb");if(!el)return;var t=td(),ph=S.phase,a2=ph=="active",spentToday=S.exp.some(function(e){return isEnv(e.c)&&!isP(e)&&e.d==t}),quizDone=S.qz&&S.qz.d==t,left=leftTot(),reviewed=a2&&(hasPlanned()||!!S.plan.man||!!S.plan.rv),
+ S5=[["Pay",a2||ph=="none"],["Plan",reviewed],["Set aside",a2&&left<=0.5&&sm(cyI())>0],["Spend",spentToday],["Reflect",!!quizDone]],cur=-1,cta,txt,i;for(i=0;i<S5.length;i++){if(!S5[i][1]){cur=i;break}}
+ var qk="document.getElementById('qk').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('qk').focus()";
+ if(ph=="none"){txt="This cycle is complete. Plan your next pay to keep the flow going.";cta=["Plan next pay","go('plan')"]}
+ else if(!a2){txt=S.plan.exp>0?"Waiting for your pay (about "+fd(S.plan.start)+"). Your plan is ready to review.":"Set up your first plan so I can guide you.";cta=S.plan.exp>0?["Log pay now","prefill()"]:["Open setup","wizOpen()"]}
+ else if(!reviewed){txt="Your pay is in. Review the plan so every shilling has a job.";cta=["Review plan","S.plan.rv=1;save();go('plan')"]}
+ else if(left>0.5){txt="Confirm each line as you move the money. "+f(left)+" is still to set aside.";cta=["Set aside lines","jump('chk')"]}
+ else if(!spentToday){txt="Your plan is set. Log what you spend today so your safe-to-spend number stays live.";cta=["Log spending",qk]}
+ else if(!quizDone){txt="Nice work today. One quick question grows your money tree.";cta=["Daily challenge","jump('chl')"]}
+ else{txt="You are all caught up today. I keep watching and will nudge you if anything changes.";cta=null}
+ el.innerHTML="<div class='fh2'><span class='kl'>Today's path</span><span class='kl'>"+(cur<0?"All done":"Step "+(cur+1)+" of 5")+"</span></div><div class='stepr'>"+S5.map(function(x,i){return "<span class='"+(x[1]?"done":i==cur?"now":"")+"'>"+(x[1]?"✓ ":"")+x[0]+"</span>"}).join("")+"</div><div class='mu'>"+txt+"</div>"+(cta?"<div class='row'><button onclick=\""+cta[1]+"\">"+cta[0]+" →</button></div>":"")}
+function notice(){var o=[],m=dayMap(),sp=envSp(),dk=Object.keys(m.sp);
+ if(dk.length>=10){var sw=[0,0,0,0,0,0,0],cw=[0,0,0,0,0,0,0],DN=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];dk.forEach(function(d){var w=new Date(d+"T00:00:00").getDay();sw[w]+=m.sp[d];cw[w]++});var av=sw.map(function(v,i){return cw[i]?v/cw[i]:0}),hi=av.indexOf(Math.max.apply(null,av)),ta=sm(dk.map(function(d){return{a:m.sp[d]}}))/dk.length;if(av[hi]>ta*1.25)o.push({t:"I noticed you spend most on "+DN[hi]+"s",b:"About "+f(av[hi])+" on average, versus "+f(ta)+" on a typical day. Plan for it or set a small cap.",al:"See pattern",fn:"jumpRep('wk')"})}
+ var cnt={};sp.forEach(function(e){if(e.n){var k=e.n.toLowerCase();cnt[k]=cnt[k]||{n:e.n,c:0,t:0};cnt[k].c++;cnt[k].t+=e.a}});var top=Object.keys(cnt).map(function(k){return cnt[k]}).sort(function(a,b){return b.t-a.t})[0];
+ if(top&&top.c>=3)o.push({t:"I noticed you buy "+esc(top.n)+" often",b:top.c+" times so far, "+f(top.t)+" in total (about "+f(top.t/top.c)+" each). Planning it or buying in bulk could save money.",al:"Plan it",fn:"go('plan')"});
+ var l3=lastDays(m.sp,3),a3=sm(l3.map(function(x){return{a:x}}))/3,md=dk.length>=7?med(dk.map(function(d){return m.sp[d]})):0;
+ if(md>0&&a3>md*1.4)o.push({t:"Your last 3 days ran hot",b:"You averaged "+f(a3)+" a day against a usual "+f(md)+".",al:"See spending",fn:"jump('spd')"});else if(md>0&&a3<md*0.6)o.push({t:"Your last 3 days were calm",b:"Averaging "+f(a3)+" a day against a usual "+f(md)+". Your safe-to-spend number is growing.",al:"See spending",fn:"jump('spd')"});
+ return o}
+leads=(function(o){return function(){var L=o();notice().slice(0,2).forEach(function(n){L.push({p:47,tone:"idea",tag:"NOTICED",ic:"👀",t:n.t,b:n.b,al:n.al,fn:n.fn})});L.sort(function(a,b){return b.p-a.p});return L}})(leads);
+homeUI=(function(o){return function(){o();flowUI();moreUI();if(!S.setup&&!WZSHOWN){WZSHOWN=1;wizOpen()}}})(homeUI);
+$("tick").addEventListener("mouseenter",function(){TKP=1});$("tick").addEventListener("mouseleave",function(){TKP=0});
 function exp(){var q=function(s){return '"'+String(s||"").replace(/"/g,'""')+'"'},r=["type,date,category,amount_kes,note"];
  S.inc.forEach(function(p){r.push(["income",p.d,q(p.s),p.a,q(p.n)].join())});S.exp.forEach(function(e){r.push([isP(e)?"set_aside":"spend",e.d,e.c,e.a,q(e.n)].join())});
  S.inv.forEach(function(i){i.costs.forEach(function(c){r.push(["invest_cost",c.d,q(i.n),c.a,q(i.cat)].join())});i.ret.forEach(function(x){r.push(["invest_return",x.d,q(i.n),x.a,q(x.n)].join())});r.push(["invest_value",td(),q(i.n),i.cur||0,q(i.st+" "+(i.lesson||""))].join())});
@@ -1379,11 +1466,10 @@ render();show();
     brand.innerHTML='<div class="logo">M</div><div><b>Money OS</b><span>Personal finance workspace</span></div>';
     side.appendChild(brand);
     var rail=document.createElement('div');rail.className='rail';rail.id='mos-navrail';
-    var LBL={home:'Dashboard',add:'Log money',plan:'Plan',invest:'Invest',rep:'Reports'},GR=[['Overview',['home']],['Money',['add','plan']],['Grow',['invest']],['Insights',['rep']]];
+    var LBL={home:'Dashboard',add:'Log money',plan:'Plan',invest:'Invest',rep:'Reports',more:'More and backup'},GR=[['Overview',['home']],['Money',['add','plan']],['Grow',['invest']],['Insights',['rep']],['Settings',['more']]];
     GR.forEach(function(g){var h=document.createElement('div');h.className='navsec kl';h.textContent=g[0];rail.appendChild(h);
       g[1].forEach(function(id){var n=NAV.filter(function(q){return q[0]===id})[0];var b=document.createElement('button');b.className='qb';b.setAttribute('data-go',id);b.innerHTML='<i>'+IC2[id]+'</i>'+LBL[id];b.onclick=function(){go(id)};rail.appendChild(b)})});
-    var h2=document.createElement('div');h2.className='navsec kl';h2.textContent='Settings';rail.appendChild(h2);
-    var pb=document.createElement('button');pb.className='qb';pb.innerHTML='<i>'+EYE1+'</i>Privacy mode';pb.onclick=function(){privacy()};rail.appendChild(pb);
+        var pb=document.createElement('button');pb.className='qb';pb.innerHTML='<i>'+EYE1+'</i>Privacy mode';pb.onclick=function(){privacy()};rail.appendChild(pb);
     side.appendChild(rail);
     var nodes=[].slice.call(document.body.childNodes),scripts=[],content=[];
     nodes.forEach(function(n){if(n.nodeType===1&&n.tagName==='SCRIPT'){scripts.push(n)}else if(n.nodeType===1||n.nodeType===3){content.push(n)}});
